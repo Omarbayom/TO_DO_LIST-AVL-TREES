@@ -5,6 +5,11 @@
 #include <iostream>
 #include<Windows.h>
 #include <string> 
+#include <sstream>
+#include <algorithm>
+#include <vector>
+
+
 
 using namespace std;
 
@@ -17,7 +22,6 @@ public:
     int priority;
     Node* left;
     Node* right;
-    int height;
     Node();
     Node(int x, string t);
 };
@@ -25,8 +29,9 @@ public:
 class to_do {
 
 private:
-    Node* root;
+    
     Node* ref = NULL;
+    Node* root;
     int tree_height(Node* r);
     int getBalanceFactor(Node* r);
     Node* rightrotation(Node* r);
@@ -38,10 +43,12 @@ private:
     Node* minim(Node* roo);
     Node* Delete(Node* r, Node* ptr);
     void Traversal(Node* n, string x);
+    
 
 
 public:
     to_do(); 
+    string getTheRootTitle();
     int getBalanceFactor();                     
     void insert();  
     void displayTasks();                     
@@ -49,6 +56,7 @@ public:
     int tree_height();
    
 };
-
-void operation(to_do t);
+int calculateAsciiSum(const string& str);
+void operation(to_do t); 
+string edit_string(string text);
 #endif 

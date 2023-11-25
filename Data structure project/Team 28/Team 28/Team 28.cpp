@@ -7,7 +7,7 @@ using namespace std;
 int main()
 {
     to_do t;
-    mainscreen();
+    //mainscreen();
     operation(t);
     return 0;
 }

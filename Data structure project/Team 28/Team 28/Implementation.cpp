@@ -1,5 +1,41 @@
 #include "Header.h"
 
+string  edit_string(string text) {
+    // Remove leading and trailing whitespace 
+    text.erase(text.begin(), find_if(text.begin(), text.end(), [](unsigned char ch) {
+        return !isspace(ch);
+        }));
+
+    text.erase(find_if(text.rbegin(), text.rend(), [](unsigned char ch) {
+        return !isspace(ch);
+        }).base(), text.end());
+
+    // Split into words by spaces 
+    istringstream iss(text);
+    vector<string> words{ istream_iterator<string>{iss}, istream_iterator<string>{} };
+
+    // Join back with single space
+    ostringstream oss;
+    copy(words.begin(), words.end(), ostream_iterator<std::string>(oss, " "));
+    text = oss.str();
+
+    // Remove trailing space if present
+    if (!text.empty() && text.back() == ' ') {
+        text.pop_back();
+    }
+
+    return text;
+}
+int  calculateAsciiSum(const string& str) {
+    int sum = 0;
+
+    for (char ch : str) {
+        // Add the ASCII value of each character to the sum
+        sum += static_cast<int>(ch);
+    }
+
+    return sum;
+}
 void callExit()
 {
     system("cls");
@@ -64,7 +100,8 @@ void mainscreen() {
 }
 
 int printop() {
-    int num;
+    string num;
+    int x;
     cout << "=====================================================" << endl;
     cout << "0- Exit" << endl;
     cout << "1- Display your to-do list" << endl;
@@ -72,16 +109,18 @@ int printop() {
     cout << "3- Delete one item " << endl;
     cout << "4- See the height of the tree " << endl;
     cout << "5- get the balance factor " << endl;
-    cin >> num;
+    getline(cin, num);
+    num = edit_string(num);
+    int y = calculateAsciiSum(num);
+    x = y - '0';
     cout << endl;
     cout << "=====================================================" << endl;
-    return num;
+    return x;
 }
 
 Node::Node() {
     right = NULL;
     left = NULL;
-    height = 1;
 }
 
 Node::Node(int x, string t) {
@@ -185,9 +224,12 @@ bool to_do::isfound(Node* r) {
 
 void to_do::insert() {
     int x;
-    string t;
+    string t,num;
     cout << "please enter your priorty" << endl;
-    cin >> x;
+    getline(cin, num);
+    num = edit_string(num);
+    int z = calculateAsciiSum(num);
+    x = z - '0';
     int y = 0;
     do {
         if (x > 0 && x <= 5) {
@@ -195,13 +237,16 @@ void to_do::insert() {
         }
         else {
             cout << "priority should be between 1 and 5 renter it please" << endl;
-            cin >> x;
+            getline(cin, num);
+            num = edit_string(num);
+            int z = calculateAsciiSum(num);
+            x = z - '0';
         }
     } while (y == 0);
     cout << "Please enter your text: " << endl;
 
-    cin.ignore();
     getline(cin, t);
+    t = edit_string(t);
     Traversal(root, t);
     if (ref != NULL) {
         cout << "item exist" << endl;
@@ -256,6 +301,7 @@ Node* to_do::minim(Node* roo) {
 
 Node* to_do::Delete(Node* r, Node* ptr)
 {
+    Traversal(r, ptr->title);
     if (r == NULL || ptr == NULL)
         return r;
     if (isfound(r->left)) {
@@ -284,19 +330,20 @@ Node* to_do::Delete(Node* r, Node* ptr)
         else {
             Node* woh = minim(r->right);
             r->title = woh->title;
+            r->priority = woh->priority;
             r->right = Delete(r->right, woh);
         }
     }
     int bf = getBalanceFactor(r);
-    if (bf == 2 && getBalanceFactor(r->left) >= 0)
+    if (bf == 2 && getBalanceFactor(r->left) >= 0)//R
         return rightrotation(r);
-    else if (bf == 2 && getBalanceFactor(r->left) == -1) {
+    else if (bf == 2 && getBalanceFactor(r->left) == -1) {//LR
         r->left = leftrotation(r->left);
         return rightrotation(r);
     }
-    else  if (bf == -2 && getBalanceFactor(r->right) <= 0)
+    else  if (bf == -2 && getBalanceFactor(r->right) <= 0)//L
         return leftrotation(r);
-    else if (bf == -2 && getBalanceFactor(r->right) == 1) {
+    else if (bf == -2 && getBalanceFactor(r->right) == 1) {//RL
         r->right = rightrotation(r->right);
         return leftrotation(r);
     }
@@ -313,16 +360,24 @@ void to_do::Traversal(Node* n, string x) {
     Traversal(n->left, x);
 }
 
-void to_do::Delete() {
+void to_do:: Delete() {
     string x;
     displayTasks();
     cout << "please entre the deletion" << endl;
-    cin.ignore();
     getline(cin, x);
+    x = edit_string(x);
     Traversal(root, x);
-    root = Delete(root, ref);
-    ref = NULL;
+    if (ref != NULL) {
+        root = Delete(root, ref);
+        ref = NULL;
+    }
+    else {
+        cout << "Item doesn't exist" << endl;
+    }
     return;
+}
+string to_do::getTheRootTitle() {
+    return root->title;
 }
 
 int to_do::tree_height() {
@@ -374,12 +429,14 @@ void operation(to_do t) {
             break;
         case(4):
             cout << "the height of the tree is : " << t.tree_height() << endl;
+            cout << "the root of the tree is : " << t.getTheRootTitle() << endl;
             system("pause");
             system("cls");
             operation(t);
             break;
         case(5):
             cout << "the balcance factor of the tree is : " << t.getBalanceFactor() << endl;
+            cout << "the root of the tree is : " << t.getTheRootTitle() << endl;
             system("pause");
             system("cls");
             operation(t);
