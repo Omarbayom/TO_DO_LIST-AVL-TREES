@@ -1,4 +1,4 @@
 ﻿  Implementation.cpp
-C:\Users\dell\Desktop\DS\Data structure project\Team 28\Team 28\Implementation.cpp(86,14): warning C4309: 'initializing': truncation of constant value
-C:\Users\dell\Desktop\DS\Data structure project\Team 28\Team 28\Implementation.cpp(86,23): warning C4309: 'initializing': truncation of constant value
+C:\Users\dell\Desktop\DS\Data structure project\Team 28\Team 28\Implementation.cpp(99,14): warning C4309: 'initializing': truncation of constant value
+C:\Users\dell\Desktop\DS\Data structure project\Team 28\Team 28\Implementation.cpp(99,23): warning C4309: 'initializing': truncation of constant value
   Team 28.vcxproj -> C:\Users\dell\Desktop\DS\Data structure project\Team 28\x64\Debug\Team 28.exe

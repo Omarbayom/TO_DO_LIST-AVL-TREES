@@ -1,31 +1,36 @@
 #include "Header.h"
 
-string  edit_string(string text) {
-    // Remove leading and trailing whitespace 
-    text.erase(text.begin(), find_if(text.begin(), text.end(), [](unsigned char ch) {
-        return !isspace(ch);
-        }));
 
-    text.erase(find_if(text.rbegin(), text.rend(), [](unsigned char ch) {
-        return !isspace(ch);
-        }).base(), text.end());
+string edit_string(string text) {
 
-    // Split into words by spaces 
+    // Try to split string normally  
     istringstream iss(text);
-    vector<string> words{ istream_iterator<string>{iss}, istream_iterator<string>{} };
+    string word;
+    string words;
 
-    // Join back with single space
-    ostringstream oss;
-    copy(words.begin(), words.end(), ostream_iterator<std::string>(oss, " "));
-    text = oss.str();
+    bool extractedWord = false;
 
-    // Remove trailing space if present
+    while (iss >> word) {
+        words += word + " ";
+        extractedWord = true;
+    }
+
+    // If no words extracted, treat whole input as single "word"
+    if (!extractedWord) {
+        words = text + " ";
+    }
+
+    // Join words back together
+    text = words;
+
+    // Remove trailing space
     if (!text.empty() && text.back() == ' ') {
         text.pop_back();
     }
 
     return text;
 }
+
 int  calculateAsciiSum(const string& str) {
     int sum = 0;
 
@@ -74,6 +79,14 @@ void mainscreen() {
     cout << "   Mohamed Ahmed Abdelroauf (2001038)";
     cout << "\n\n";
     cout << "\t\t\t\t";
+    cout << "Presented To    ";
+    cout << ":";
+    cout << "  Prof. Ashraf Ahmed Abdel Raouf Hamdi";
+    cout << "\n\n";
+    cout << "\t\t\t\t\t\t";
+    cout << "   Eng. Ahmad Salama Abdelaziz Salama Salama ";
+    cout << "\n\n";
+    cout << "\t\t\t\t";
     cout << "Mini Project   ";
     cout << ":";
     cout << "   TO-DO LIST";
@@ -101,7 +114,6 @@ void mainscreen() {
 
 int printop() {
     string num;
-    int x;
     cout << "=====================================================" << endl;
     cout << "0- Exit" << endl;
     cout << "1- Display your to-do list" << endl;
@@ -109,10 +121,12 @@ int printop() {
     cout << "3- Delete one item " << endl;
     cout << "4- See the height of the tree " << endl;
     cout << "5- get the balance factor " << endl;
+    cout << "6- 2D print" << endl;
+    cout << ">>";
     getline(cin, num);
     num = edit_string(num);
     int y = calculateAsciiSum(num);
-    x = y - '0';
+    int x = y - '0';
     cout << endl;
     cout << "=====================================================" << endl;
     return x;
@@ -359,25 +373,55 @@ void to_do::Traversal(Node* n, string x) {
     Traversal(n->right, x);
     Traversal(n->left, x);
 }
+void to_do:: printVertical(Node* root, int level) {
+    if (root == nullptr) {
+        for (int i = 0; i < level; i++) {
+            cout << "   ";
+        }
+        cout << "(NULL)"<<endl;
+        return;
+    }
+
+    printVertical(root->right, level + 1);
+
+    for (int i = 0; i < level; i++) {
+        cout << "   ";
+    }
+
+    cout << "(" << root->priority << ", " << root->title << ")\n";
+
+    printVertical(root->left, level + 1);
+}
+
+void to_do:: printVerticalTree() {
+    printVertical(root, 0);
+}
 
 void to_do:: Delete() {
     string x;
     displayTasks();
-    cout << "please entre the deletion" << endl;
-    getline(cin, x);
-    x = edit_string(x);
-    Traversal(root, x);
-    if (ref != NULL) {
-        root = Delete(root, ref);
-        ref = NULL;
-    }
-    else {
-        cout << "Item doesn't exist" << endl;
+    if (root != NULL) {
+        cout << "please entre the deletion" << endl;
+        getline(cin, x);
+        x = edit_string(x);
+        Traversal(root, x);
+        if (ref != NULL) {
+            root = Delete(root, ref);
+            ref = NULL;
+        }
+        else {
+            cout << "Item doesn't exist" << endl;
+        }
     }
     return;
 }
 string to_do::getTheRootTitle() {
-    return root->title;
+    if (root != NULL) {
+        return root->title;
+    }
+    else {
+        return "Your To_DO List Is Empty";
+    }
 }
 
 int to_do::tree_height() {
@@ -396,10 +440,9 @@ int to_do::tree_height() {
         }
     }
 }
-int e = 0;
 void operation(to_do t) {
 
-    do {
+   while(true){
         int num;
         num = printop();
         switch (num)
@@ -413,42 +456,41 @@ void operation(to_do t) {
             t.displayTasks();
             system("pause");
             system("cls");
-            operation(t);
             break;
         case(2):
             t.insert();
             system("pause");
             system("cls");
-            operation(t);
             break;
         case(3):
             t.Delete();
             system("pause");
             system("cls");
-            operation(t);
             break;
         case(4):
             cout << "the height of the tree is : " << t.tree_height() << endl;
             cout << "the root of the tree is : " << t.getTheRootTitle() << endl;
             system("pause");
             system("cls");
-            operation(t);
             break;
         case(5):
             cout << "the balcance factor of the tree is : " << t.getBalanceFactor() << endl;
             cout << "the root of the tree is : " << t.getTheRootTitle() << endl;
             system("pause");
             system("cls");
-            operation(t);
+            break;
+        case(6):
+            t.printVerticalTree();
+            system("pause");
+            system("cls");
             break;
         default:
             cout << "please enter valid number" << endl;
             system("pause");
             system("cls");
-            operation(t);
             break;
         }
-    } while (e == 0);
+    } 
 
     return;
 }

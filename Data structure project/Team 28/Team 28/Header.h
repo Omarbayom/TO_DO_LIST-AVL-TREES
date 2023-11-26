@@ -7,8 +7,6 @@
 #include <string> 
 #include <sstream>
 #include <algorithm>
-#include <vector>
-
 
 
 using namespace std;
@@ -43,6 +41,7 @@ private:
     Node* minim(Node* roo);
     Node* Delete(Node* r, Node* ptr);
     void Traversal(Node* n, string x);
+    void printVertical(Node* root, int level);
     
 
 
@@ -54,6 +53,7 @@ public:
     void displayTasks();                     
     void Delete();       
     int tree_height();
+    void printVerticalTree();
    
 };
 int calculateAsciiSum(const string& str);
