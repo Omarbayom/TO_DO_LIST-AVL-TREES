@@ -8,6 +8,7 @@ int main()
 {
     to_do t;
     mainscreen();
+    t.readFromFile("todolist.txt");
     operation(t);
     return 0;
 }
